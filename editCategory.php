@@ -1,3 +1,15 @@
+<?php
+    if(isset($_GET["id"])){
+        $catID=$_GET["id"];
+        require_once("connection.php");
+        $sql=$conn->prepare("SELECT * FROM category WHERE categoryID=:category");
+        $sql->execute(array(':category' => $catID));
+        $result = $sql->fetch(PDO::FETCH_ASSOC);
+    }else{
+        header("location:index.php");
+    }
+    
+?>
 <!doctype html>
 <html lang="en">
 
@@ -94,83 +106,30 @@
 
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Dashboard</h1>
+                    <h1 class="h2">Edit Student</h1>
                     <div class="btn-toolbar mb-2 mb-md-0">
                         <div class="btn-group me-2">
-                            <button data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-sm btn-outline-secondary">New Category</button>
+            
                         </div>
                     </div>
                 </div>
-
-                <?php
-                require_once("connection.php");
-                $query1 = $conn->prepare("SELECT * FROM category");
-                $query1->execute();
-                ?>
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Category Name</th>
-                                <th>Edit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            while ($res = $query1->fetch(PDO::FETCH_ASSOC)) {
-                            ?>
-                                <tr>
-                                    <td><?php echo $res["categoryID"]; ?></td>
-                                    <td><?php echo $res["categoryName"]; ?></td>
-                                    <td>
-                                        <a class="btn btn-sm btn-outline-primary" href="editCategory.php?id=<?php echo $res["categoryID"] ?>">Edit</a>
-                                        <a class="btn btn-sm btn-outline-danger" href="deleteCategory.php?id=<?php echo $res["categoryID"] ?>">Delete</a>
-                                    </td>
-                                </tr>
-                            <?php
-                            }
-                            ?>
-                            <tr>
-
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </main>
-        </div>
-    </div>
-
-
-    <div class="modal" id="myModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title">Modal Heading</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <!-- Modal body -->
-                <div class="modal-body">
-                    <form action="saveCategory.php" method="POST">
+                <form action="updateCategory.php" method="POST">
                         <div class="form-floating mb-3 mt-3">
-                            <input type="text" class="form-control" required id="catName" name="catName" placeholder="Enter Category">
+                            <input type="text" hidden="" class="form-control" required id="catID" name="catID" placeholder="ID" value="<?php echo $result['categoryID'];?>">
+                            <label for="catID">Category ID</label>
+                        </div>
+                        <div class="form-floating mb-3 mt-3">
+                            <input type="text" class="form-control" required id="catName" name="catName" value="<?php echo $result['categoryName'];?>" placeholder="Enter Category">
                             <label for="catName">Category Name</label>
                         </div>
                         <input type="submit" class="btn btn-success" value="SAVE">
                     </form>
-                </div>
-
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    
-                </div>
-
-            </div>
+                
+                
+            </main>
         </div>
     </div>
+
     <script src="bootstrap.js"></script>
 
 </body>
